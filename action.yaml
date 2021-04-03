@@ -1,0 +1,36 @@
+name: "Remove old PR artifacts"
+description: "Remove unused artifacts to lower the use of GitHub storage"
+inputs:
+  workflow_filename:
+    description: "Filename of the workflow file, 'ci.yaml' for example"
+    required: true
+  git_branch:
+    description: "PR branch"
+    required: true
+  github_token:
+    description: "GitHub token"
+    required: true
+  debug:
+    description: "Set to whatever value to debug gh api calls"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        DEBUG: ${{ inputs.debug }}
+        GITHUB_REPO: ${{ github.repository }}
+        GIT_BRANCH: ${{ inputs.git_branch }}
+        WORKFLOW_FILENAME: ${{ inputs.workflow_filename }}
+      shell: bash
+      run: |
+        RUN_IDS=$(gh api -X GET repos/$GITHUB_REPO/actions/workflows/$WORKFLOW_FILENAME/runs -f branch="$GIT_BRANCH" | jq '.workflow_runs | map(.id) | .[]')
+
+        for RUN_ID in $RUN_IDS
+        do
+          ARTIFACT_IDS=$(gh api repos/$GITHUB_REPO/actions/runs/$RUN_ID/artifacts | jq '.artifacts | map(.id) | .[]')
+          for ARTIFACT_ID in $ARTIFACT_IDS
+          do
+            gh api -X DELETE repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID
+          done
+        done

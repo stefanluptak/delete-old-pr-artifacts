@@ -4,26 +4,31 @@ inputs:
   workflow_filename:
     description: "Filename of the workflow file, 'ci.yaml' for example"
     required: true
+  github_repo:
+    description: "GitHub repository to operate on"
+    required: false
+    default: ${{ github.repository }}
   git_branch:
     description: "PR branch"
-    required: true
+    required: false
+    default: ${{ github.head_ref }}
   github_token:
     description: "GitHub token"
-    required: true
-  debug:
-    description: "Set to whatever value to debug gh api calls"
     required: false
+    default: ${{ secrets.GITHUB_TOKEN }}
+  debug:
+    description: 'Set to "true" or "false" whatever value to debug gh api calls'
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
-    - env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
-        DEBUG: ${{ inputs.debug }}
-        GITHUB_REPO: ${{ github.repository }}
-        GIT_BRANCH: ${{ inputs.git_branch }}
-        WORKFLOW_FILENAME: ${{ inputs.workflow_filename }}
-      shell: bash
+    - shell: bash
       run: |
+        if [ "$DEBUG" != "true" ]; then
+          unset DEBUG
+        fi
+
         RUN_IDS=$(gh api -X GET repos/$GITHUB_REPO/actions/workflows/$WORKFLOW_FILENAME/runs -f branch="$GIT_BRANCH" | jq '.workflow_runs | map(.id) | .[]')
 
         for RUN_ID in $RUN_IDS
@@ -34,3 +39,9 @@ runs:
             gh api -X DELETE repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID
           done
         done
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        DEBUG: ${{ inputs.debug }}
+        GITHUB_REPO: ${{ inputs.github_repo }}
+        GIT_BRANCH: ${{ inputs.git_branch }}
+        WORKFLOW_FILENAME: ${{ inputs.workflow_filename }}

@@ -1,5 +1,9 @@
 name: "Remove old PR artifacts"
 description: "Remove unused artifacts to lower the use of GitHub storage"
+author: Štefan Ľupták
+branding:
+  icon: trash-2
+  color: red
 inputs:
   workflow_filename:
     description: "Filename of the workflow file, 'ci.yaml' for example"

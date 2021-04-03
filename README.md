@@ -10,6 +10,8 @@ To delete them, use this GitHub Action.
 
 ## Usage
 
+### When closing pull request
+
 ```yaml
 name: PR cleanup
 
@@ -25,6 +27,10 @@ jobs:
         with:
           workflow_filename: ci.yaml
 ```
+
+### When synchronizing pull request
+
+Just use `synchronize` type of pull request event instead of `closed` one. You can of course use both together.
 
 ## Parameters
 

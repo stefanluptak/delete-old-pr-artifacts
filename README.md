@@ -31,9 +31,9 @@ jobs:
 | Parameter | Description | Required | Default |
 | - | - | - | - |
 | `workflow_filename` | Filename of the workflow that generated artifacts you want to delete  | ✅ |  |
-| `github_token` | GitHub token used to authenticate you GitHub API calls | ❌ | `${{ secrets.GITHUB_TOKEN }}` |
-| `github_repo` | GitHub repository you want to delete the artifact in | ❌ | `${{ github.repository }}` |
-| `git_branch` | Git branch of the pull request | ❌ | `${{ github.head_ref }}` |
+| `github_token` | GitHub token used to authenticate you GitHub API calls | ❌ | `secrets.GITHUB_TOKEN` |
+| `github_repo` | GitHub repository you want to delete the artifact in | ❌ | `github.repository` |
+| `git_branch` | Git branch of the pull request | ❌ | `github.head_ref` |
 | `debug` | Whether you want to see some debugging output. | ❌ | `false` |
 
 ## Notes

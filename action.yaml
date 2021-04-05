@@ -43,11 +43,13 @@ runs:
         do
           ARTIFACT_IDS=$(gh api repos/$GITHUB_REPO/actions/runs/$RUN_ID/artifacts | jq '.artifacts | map(.id) | .[]')
           for ARTIFACT_ID in $ARTIFACT_IDS
+          ARTIFACT_URL="repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID"
           do
             if [ "$DRY_RUN" == "true" ]; then
-              echo "Dry run, not deleting. Otherwise would delete artifact with ID $ARTIFACT_ID by calling 'gh api -X DELETE repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID'"
+              echo "! Dry run ! \"gh api -X DELETE $ARTIFACT_URL\""
             else
-              gh api -X DELETE repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID
+              echo "Deleting \"$ARTIFACT_URL\""
+              gh api -X DELETE "$ARTIFACT_URL"
             fi
           done
         done

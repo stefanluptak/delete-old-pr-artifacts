@@ -23,14 +23,14 @@ jobs:
   delete_pr_artifacts:
     runs-on: ubuntu-latest
     steps:
-      - uses: stefanluptak/delete-old-pr-artifacts@v0.0.1
+      - uses: stefanluptak/delete-old-pr-artifacts@v1
         with:
           workflow_filename: ci.yaml
 ```
 
 ### When synchronizing pull request
 
-If you want to delete previous artifacts for active PR, just use event type `synchronize` instead of `closed` one. You can of course use both together to leave no artifacts of your pull request workflow runs.
+If you want to delete previous artifacts for active PR, just use event type `synchronize` instead of `closed`. Remember to call this action before building fresh new artifact to not delete it too.
 
 ## Parameters
 
@@ -40,9 +40,9 @@ If you want to delete previous artifacts for active PR, just use event type `syn
 | `github_token` | GitHub token used to authenticate you GitHub API calls | ❌ | `github.token` |
 | `github_repo` | GitHub repository you want to delete the artifact in | ❌ | `github.repository` |
 | `git_branch` | Git branch of the pull request | ❌ | `github.head_ref` |
-| `debug` | Set to `'true'` if you want to see some debugging output. | ❌ | `false` |
-| `dry_run` | Set to `'true'` if you don't want to really delete the artifact, but only to see the what would be deleted. | ❌ | `false` |
+| `debug` | Set to `true` if you want to see some debugging output. | ❌ | `false` |
+| `dry_run` | Set to `true` if you don't want to really delete the artifact, but only to see the what would be deleted. | ❌ | `false` |
 
-## Notes
+## Disclaimer
 
 This is my first GitHub Action. Feel free to contribute, ask or give me advice on how to improve it. Thanks. :-)

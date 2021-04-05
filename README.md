@@ -30,7 +30,7 @@ jobs:
 
 ### When synchronizing pull request
 
-Just use `synchronize` type of pull request event instead of `closed` one. You can of course use both together.
+If you want to delete previous artifacts for active PR, just use event type `synchronize` instead of `closed` one. You can of course use both together to leave no artifacts of your pull request workflow runs.
 
 ## Parameters
 
@@ -40,7 +40,8 @@ Just use `synchronize` type of pull request event instead of `closed` one. You c
 | `github_token` | GitHub token used to authenticate you GitHub API calls | ❌ | `github.token` |
 | `github_repo` | GitHub repository you want to delete the artifact in | ❌ | `github.repository` |
 | `git_branch` | Git branch of the pull request | ❌ | `github.head_ref` |
-| `debug` | Whether you want to see some debugging output. | ❌ | `false` |
+| `debug` | Set to `'true'` if you want to see some debugging output. | ❌ | `false` |
+| `dry_run` | Set to `'true'` if you don't want to really delete the artifact, but only to see the what would be deleted. | ❌ | `false` |
 
 ## Notes
 

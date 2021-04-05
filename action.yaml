@@ -1,5 +1,5 @@
-name: "Remove old PR artifacts"
-description: "Remove unused artifacts to lower the use of GitHub storage"
+name: "Delete old pull request artifacts"
+description: "Delete unused artifacts to lower the use of GitHub storage"
 author: Štefan Ľupták
 branding:
   icon: trash-2
@@ -21,7 +21,11 @@ inputs:
     required: false
     default: ${{ github.token }}
   debug:
-    description: 'Set to "true" or "false" whatever value to debug gh api calls'
+    description: "Set to 'true' to debug gh api calls"
+    required: false
+    default: "false"
+  dry_run:
+    description: "If you want to execute the action without actually deleting the artifacts. Useful for testing and debugging this action."
     required: false
     default: "false"
 runs:
@@ -40,12 +44,17 @@ runs:
           ARTIFACT_IDS=$(gh api repos/$GITHUB_REPO/actions/runs/$RUN_ID/artifacts | jq '.artifacts | map(.id) | .[]')
           for ARTIFACT_ID in $ARTIFACT_IDS
           do
-            gh api -X DELETE repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID
+            if [ "$DRY_RUN" == "true" ]; then
+              echo "Dry run, not deleting. Otherwise would delete artifact with ID $ARTIFACT_ID by calling 'gh api -X DELETE repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID'"
+            else
+              gh api -X DELETE repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID
+            fi
           done
         done
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
         DEBUG: ${{ inputs.debug }}
+        DRY_RUN: ${{ inputs.dry_run }}
         GITHUB_REPO: ${{ inputs.github_repo }}
         GIT_BRANCH: ${{ inputs.git_branch }}
         WORKFLOW_FILENAME: ${{ inputs.workflow_filename }}

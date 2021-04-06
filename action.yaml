@@ -39,12 +39,10 @@ runs:
 
         RUN_IDS=$(gh api -X GET repos/$GITHUB_REPO/actions/workflows/$WORKFLOW_FILENAME/runs -f branch="$GIT_BRANCH" | jq '.workflow_runs | map(.id) | .[]')
 
-        for RUN_ID in $RUN_IDS
-        do
+        for RUN_ID in $RUN_IDS; do
           ARTIFACT_IDS=$(gh api repos/$GITHUB_REPO/actions/runs/$RUN_ID/artifacts | jq '.artifacts | map(.id) | .[]')
-          for ARTIFACT_ID in $ARTIFACT_IDS
-          ARTIFACT_URL="repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID"
-          do
+          for ARTIFACT_ID in $ARTIFACT_IDS; do
+            ARTIFACT_URL="repos/$GITHUB_REPO/actions/artifacts/$ARTIFACT_ID"
             if [ "$DRY_RUN" == "true" ]; then
               echo "! Dry run ! \"gh api -X DELETE $ARTIFACT_URL\""
             else
